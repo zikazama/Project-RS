@@ -93,7 +93,7 @@ class _LoginPasienState extends State<LoginPasien> {
                     Container(
                       child: Container(
                           child: Center(
-                              child: FlatButton(
+                              child: TextButton(
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -107,8 +107,12 @@ class _LoginPasienState extends State<LoginPasien> {
                     Container(
                       height: 50,
                       width: 300,
-                      child: FlatButton(
-                        color: const Color(0xFFE7EEFE),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            primary: const Color(0xFF000000),
+                            backgroundColor: const Color(0xFFE7EEFE)
+                          ),
+                        // color: 
                         onPressed: () {
                           Navigator.push(
                               context,

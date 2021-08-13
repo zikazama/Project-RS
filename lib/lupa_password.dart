@@ -46,6 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             width: 300.0,
                             child: TextField(
                               decoration: InputDecoration(
+                                 prefixIcon: Icon(Icons.mail),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
@@ -72,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           Container(
                             child: Container(
                                 child: Center(
-                                    child: FlatButton(
+                                    child: TextButton(
                               onPressed: () {
                                 Navigator.push(
                                     context,

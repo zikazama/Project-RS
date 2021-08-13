@@ -10,7 +10,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: const Color(0xFF0068F7),
         body: SingleChildScrollView(
           child: Column(children: <Widget>[
@@ -102,7 +102,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                           new Container(
                             child: Container(
                                 child: Center(
-                                    child: FlatButton(
+                                    child: TextButton(
                               onPressed: () {
                                 Navigator.push(
                                     context,
