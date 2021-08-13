@@ -8,52 +8,69 @@ class DashboardPasien extends StatelessWidget {
       body: Stack(children: <Widget>[
         Column(
           children: <Widget>[
-            Container(
-              height: 200,
+            Positioned(
+              child: Container(
+              height: 250,
               decoration: BoxDecoration(
                   image: DecorationImage(
                 image: AssetImage('assets/images/wave_dashboard.png'),
                 fit: BoxFit.cover,
               )),
-            ),
-            Container(
-              child: Column(
+              child: Stack(
                 children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(top: 10),
-                      child: Text(
-                        "Dashboard",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ))
+                  Positioned(
+                      child: Container(
+                          margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.120),
+                          child: Center(
+                              child: Text(
+                            "Dashboard",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),
+                          )))),
+                          Positioned(
+                            
+                      child: Container(
+                        padding: EdgeInsets.only(left:30.0),
+                          margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.100),
+                          child: SafeArea(
+                              child: Text(
+                            "Selamat datang User",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 15),
+                          ))))
                 ],
               ),
-            )
-          ],
+            ),
+    
         ),
-        // Expanded(
-        //   child: GridView.count(
-        //     crossAxisCount: 3,
-        //     children: <Widget>[
-        //       Container(
-        //         decoration: BoxDecoration(
-        //           color: Colors.black,
-        //         ),
-        //       ),
-        //       Container(
-        //         decoration: BoxDecoration(
-        //           color: Colors.black,
-        //         ),
-        //       ),
-        //       Container(
-        //         decoration: BoxDecoration(
-        //           color: Colors.black,
-        //         ),
-        //       )
-        //     ],
-        //   ),
-        // )
+       
+        Expanded(
+          child: GridView.count(
+            crossAxisCount: 3,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
+        )
       ]),
+      ]
+      )
     );
   }
 }
