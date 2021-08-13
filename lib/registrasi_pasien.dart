@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'login_pasien.dart';
+import 'login_pasien.dart';
 
 class RegistrasiPasien extends StatefulWidget {
   @override
@@ -87,7 +87,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                 )),
                           ),
                           SizedBox(height: 25),
-                          Container(
+                          new Container(
                             height: 50,
                             width: 300,
                             child: ElevatedButton(
@@ -96,8 +96,21 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                       borderRadius:
                                           new BorderRadius.circular(5.0))),
                               onPressed: () {},
-                              child: Text('Masuk'),
+                              child: Text('Daftar'),
                             ),
+                          ),
+                          new Container(
+                            child: Container(
+                                child: Center(
+                                    child: FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPasien()));
+                              },
+                              child: Text('Kembali'),
+                            ))),
                           ),
                         ],
                       ),
