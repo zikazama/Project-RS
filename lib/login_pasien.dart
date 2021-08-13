@@ -2,6 +2,7 @@ import 'package:aplikasi_rs/lupa_password.dart';
 import 'package:flutter/material.dart';
 import 'lupa_password.dart';
 import 'registrasi_pasien.dart';
+import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 
 class LoginPasien extends StatefulWidget {
   @override
@@ -79,7 +80,12 @@ class _LoginPasienState extends State<LoginPasien> {
                         style: ElevatedButton.styleFrom(
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(5.0))),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DashboardPasien()));
+                        },
                         child: Text('Masuk'),
                       ),
                     ),
