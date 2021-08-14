@@ -11,7 +11,7 @@ class _HomeCareState extends State<HomeCare> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: const Color(0xFF0068F7),
+        backgroundColor: const Color(0xFF7380F3),
         body: SingleChildScrollView(
           child: Column(children: <Widget>[
             Container(
@@ -100,6 +100,7 @@ class _HomeCareState extends State<HomeCare> {
                             width: 300,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
+                                primary: const Color(0xFF7380F3),
                                   shape: new RoundedRectangleBorder(
                                       borderRadius:
                                           new BorderRadius.circular(5.0))),
@@ -118,7 +119,9 @@ class _HomeCareState extends State<HomeCare> {
                               MaterialPageRoute(
                                   builder: (context) => DashboardPasien()));
                               },
-                              child: Text('Kembali'),
+                              child: Text('Kembali',
+                              style: TextStyle(color: const Color(0xFF7380F3), fontSize: 14.0),
+                            ),
                             ))),
                           ),
                         ],
