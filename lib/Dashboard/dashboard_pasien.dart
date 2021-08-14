@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'homecare.dart';
 
 class DashboardPasien extends StatefulWidget {
   @override
-_DashboardPasien createState() => _DashboardPasien();
+  _DashboardPasien createState() => _DashboardPasien();
 }
 
 class _DashboardPasien extends State<DashboardPasien> {
-
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFFFFFFF),
@@ -76,35 +76,50 @@ class _DashboardPasien extends State<DashboardPasien> {
                           CategoryCard(
                             srcSvg: "assets/icons/registration.svg",
                             title: "Pendaftaran\nonline",
+                            press: (){},
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
+                            press: (){},
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/homecare.svg",
                             title: "Home Care",
+                            press: (){
+                               Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeCare()));
+                            },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/emergency.svg",
                             title: "Emergency",
+                            press: (){},
                           ),
+                          
                           CategoryCard(
                             srcSvg: "assets/icons/profile.svg",
                             title: "Profile Anda",
+                            press: (){},
                           ),
                         ],
                       ),
-                    ),   
-                   Positioned(
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.300),
-                          child: Container(
-                              child: Text(
-                            "INFORMASI GERIATRI",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
-                          )))),
+                    ),
+                    Positioned(
+                        child: Container(
+                            margin: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.300),
+                            child: Container(
+                                child: Text(
+                              "INFORMASI GERIATRI",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            )))),
                   ],
                 ),
               ),
@@ -117,32 +132,36 @@ class _DashboardPasien extends State<DashboardPasien> {
 class CategoryCard extends StatelessWidget {
   final String title;
   final String srcSvg;
+  final Function press;
   const CategoryCard({
     Key key,
-    this.title, this.srcSvg,
+    this.title,
+    this.srcSvg, this.press,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      
-      child: Container( 
+      child: Container(
         decoration: BoxDecoration(
-            color: const Color(0xFFF8F8F8), borderRadius: BorderRadius.circular(10),
-           ),
+          color: const Color(0xFFF8F8F8),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: (){},
+            onTap: press,
             child: Padding(
               padding: EdgeInsets.all(15),
               child: Column(
                 children: <Widget>[
                   Spacer(),
                   // SvgPicture.asset("svgSrc"),
-                  SvgPicture.asset(srcSvg,height: 30,),
+                  SvgPicture.asset(
+                    srcSvg,
+                    height: 30,
+                  ),
                   Spacer(),
                   Text(
                     title,
