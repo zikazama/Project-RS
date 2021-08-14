@@ -64,18 +64,18 @@ class _DashboardPasien extends State<DashboardPasien> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.270),
+                          top: MediaQuery.of(context).size.height * 0.300),
                     ),
                     Expanded(
                       child: GridView.count(
-                        padding: EdgeInsets.all(15),
+                        // padding: EdgeInsets.all(15),
                         crossAxisCount: 3,
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 20,
                         children: <Widget>[
                           CategoryCard(
                             srcSvg: "assets/icons/registration.svg",
-                            title: "Pendaftaran\nonline",
+                            title: "Daftar\nonline",
                             press: (){},
                           ),
                           CategoryCard(
@@ -111,7 +111,7 @@ class _DashboardPasien extends State<DashboardPasien> {
                         child: Container(
                             margin: EdgeInsets.only(
                                 bottom:
-                                    MediaQuery.of(context).size.height * 0.300),
+                                    MediaQuery.of(context).size.height * 0.270),
                             child: Container(
                                 child: Text(
                               "INFORMASI GERIATRI",
@@ -153,7 +153,7 @@ class CategoryCard extends StatelessWidget {
           child: InkWell(
             onTap: press,
             child: Padding(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
                   Spacer(),
