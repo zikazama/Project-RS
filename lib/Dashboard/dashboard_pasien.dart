@@ -1,3 +1,4 @@
+import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'homecare.dart';
@@ -76,33 +77,37 @@ class _DashboardPasien extends State<DashboardPasien> {
                           CategoryCard(
                             srcSvg: "assets/icons/registration.svg",
                             title: "Daftar\nonline",
-                            press: (){},
+                            press: () {},
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
-                            press: (){},
+                            press: () {},
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/homecare.svg",
                             title: "Home Care",
-                            press: (){
-                               Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeCare()));
+                            press: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeCare()));
                             },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/emergency.svg",
                             title: "Emergency",
-                            press: (){},
+                            press: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Emergency()));
+                            },
                           ),
-                          
                           CategoryCard(
                             srcSvg: "assets/icons/profile.svg",
                             title: "Profile Anda",
-                            press: (){},
+                            press: () {},
                           ),
                         ],
                       ),
@@ -136,7 +141,8 @@ class CategoryCard extends StatelessWidget {
   const CategoryCard({
     Key key,
     this.title,
-    this.srcSvg, this.press,
+    this.srcSvg,
+    this.press,
   }) : super(key: key);
 
   @override
