@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:aplikasi_rs/lupa_password.dart';
+import 'package:aplikasi_rs/services/services.dart';
 import 'package:flutter/material.dart';
 import 'lupa_password.dart';
 import 'registrasi_pasien.dart';
+import 'package:http/http.dart' as http;
 import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 
 class LoginPasien extends StatefulWidget {
@@ -9,8 +14,58 @@ class LoginPasien extends StatefulWidget {
   _LoginPasienState createState() => _LoginPasienState();
 }
 
+enum LoginStatus { notSignIn, signIn }
+
 class _LoginPasienState extends State<LoginPasien> {
   bool isHiddenPassword = true;
+
+  bool _secureText = true;
+  TextEditingController noKtp1 = new TextEditingController();
+  TextEditingController pass1 = new TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  showHide() {
+    setState(() {
+      _secureText = !_secureText;
+    });
+  }
+
+  var dataPasien;
+  Future<List> _login() async {
+    final response = await http.post(
+        'https://rsbmgeriatri.com/bhayangkara_geriatri/flutter/login.php',
+        body: {"no_ktp": noKtp1.text, "password": pass1.text});
+    // print(response.body);
+
+    dataPasien = json.decode(response.body);
+    if (dataPasien.length == 0) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text("NIK atau Kata sandi anda salah"),
+                    Text("Mohon untuk diperiksa Kembali")
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Periksa"))
+              ],
+            );
+          });
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => DashboardPasien()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +105,31 @@ class _LoginPasienState extends State<LoginPasien> {
               ),
             ),
             Container(
-                padding: EdgeInsets.all(25.0),
+              padding: EdgeInsets.all(25.0),
+              child: Form(
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextField(
+                    TextFormField(
+                      validator: (val) {
+                        return val.isEmpty || val.length == 16
+                            ? 'Cek kembali NIK anda'
+                            : null;
+                      },
+                      controller: noKtp1,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.card_membership),
                         hintText: 'Nomor KTP',
                       ),
                     ),
-                    TextField(
+                    TextFormField(
+                      controller: pass1,
+                      validator: (val) {
+                        return val.isEmpty || val.length < 6
+                            ? 'Cek Password anda'
+                            : null;
+                      },
                       obscureText: isHiddenPassword,
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.vpn_key),
@@ -81,10 +150,8 @@ class _LoginPasienState extends State<LoginPasien> {
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(5.0))),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DashboardPasien()));
+                          if (formKey.currentState.validate()) {}
+                          _login();
                         },
                         child: Text('Masuk'),
                       ),
@@ -110,20 +177,21 @@ class _LoginPasienState extends State<LoginPasien> {
                       child: TextButton(
                         style: TextButton.styleFrom(
                             primary: const Color(0xFF000000),
-                            backgroundColor: const Color(0xFFE7EEFE)
-                          ),
-                        // color: 
+                            backgroundColor: const Color(0xFFE7EEFE)),
+                        // color:
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegistrasiPasien()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => RegistrasiPasien()));
                         },
                         child: Text('Buat Akun'),
                       ),
                     )
                   ],
-                ))
+                ),
+              ),
+            )
           ],
         ),
       ),
