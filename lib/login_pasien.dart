@@ -150,8 +150,9 @@ class _LoginPasienState extends State<LoginPasien> {
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(5.0))),
                         onPressed: () {
-                          if (formKey.currentState.validate()) {}
+                          if (formKey.currentState.validate()) {
                           _login();
+                          }
                         },
                         child: Text('Masuk'),
                       ),
