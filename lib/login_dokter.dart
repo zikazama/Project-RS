@@ -1,4 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:aplikasi_rs/lupa_password.dart';
+import 'package:aplikasi_rs/services/services.dart';
+import 'package:flutter/material.dart';
+import 'lupa_password.dart';
+import 'registrasi_pasien.dart';
+import 'package:http/http.dart' as http;
+import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 
 class LoginDokter extends StatefulWidget {
   @override
@@ -7,6 +17,46 @@ class LoginDokter extends StatefulWidget {
 
 class _LoginDokterState extends State<LoginDokter> {
   bool isHiddenPassword = true;
+  TextEditingController ktp = new TextEditingController();
+  TextEditingController pass = new TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  var dataDokter;
+  Future<List> _login() async {
+    final response = await http.post(
+        'https://rsbmgeriatri.com/bhayangkara_geriatri/flutter/login_dokter.php',
+        body: {"no_ktp": ktp.text, "password": pass.text});
+    // print(response.body);
+
+    dataDokter = json.decode(response.body);
+    if (dataDokter.length == 0) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text("NIK atau Kata sandi anda salah"),
+                    Text("Mohon untuk diperiksa Kembali")
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Periksa"))
+              ],
+            );
+          });
+    } else {
+      print("Login Berhasil");
+      print("Selamat Datang " + dataDokter[0]['nama_dokter'].toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,40 +97,60 @@ class _LoginDokterState extends State<LoginDokter> {
             ),
             Container(
                 padding: EdgeInsets.all(25.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.card_membership),
-                        hintText: 'Nomor KTP',
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        validator: (val) {
+                          return val.isEmpty || val.length != 16
+                              ? 'Cek kembali NIK anda'
+                              : null;
+                        },
+                        controller: ktp,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.card_membership),
+                          hintText: 'Nomor KTP',
+                        ),
                       ),
-                    ),
-                    TextField(
-                      obscureText: isHiddenPassword,
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.vpn_key),
-                          hintText: 'Password',
-                          suffixIcon: InkWell(
-                            onTap: _togglePasswordView,
-                            child: Icon(Icons.visibility_off),
-                          )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 25),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 300,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(5.0))),
-                        onPressed: () {},
-                        child: Text('Masuk'),
+                      TextFormField(
+                        validator: (val) {
+                          return val.isEmpty || val.length < 6
+                              ? 'Cek Password anda'
+                              : null;
+                        },
+                        controller: pass,
+                        obscureText: isHiddenPassword,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.vpn_key),
+                            hintText: 'Password',
+                            suffixIcon: InkWell(
+                              onTap: _togglePasswordView,
+                              child: Icon(Icons.visibility_off),
+                            )),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(top: 25),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 300,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: new RoundedRectangleBorder(
+                                  borderRadius:
+                                      new BorderRadius.circular(5.0))),
+                          onPressed: () {
+                            if (formKey.currentState.validate()) {
+                              _login();
+                            }
+                          },
+                          child: Text('Masuk'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ))
           ],
         ),
