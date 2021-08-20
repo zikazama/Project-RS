@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:aplikasi_rs/lupa_password.dart';
-import 'package:aplikasi_rs/services/services.dart';
 import 'package:flutter/material.dart';
 import 'lupa_password.dart';
-import 'registrasi_pasien.dart';
 import 'package:http/http.dart' as http;
 import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 
@@ -20,8 +17,8 @@ class _LoginPasienState extends State<LoginPasien> {
   bool isHiddenPassword = true;
 
   bool _secureText = true;
-  TextEditingController noKtp1 = new TextEditingController();
-  TextEditingController pass1 = new TextEditingController();
+  TextEditingController noKtp = new TextEditingController();
+  TextEditingController pass = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   showHide() {
@@ -33,8 +30,8 @@ class _LoginPasienState extends State<LoginPasien> {
   var dataPasien;
   Future<List> _login() async {
     final response = await http.post(
-        'https://rsbmgeriatri.com/bhayangkara_geriatri/flutter/login.php',
-        body: {"no_ktp": noKtp1.text, "password": pass1.text});
+        'https://rsbmgeriatri.com/bhayangkara_geriatri/flutter/login_pasien.php',
+        body: {"no_ktp": noKtp.text, "password": pass.text});
     // print(response.body);
 
     dataPasien = json.decode(response.body);
@@ -113,18 +110,18 @@ class _LoginPasienState extends State<LoginPasien> {
                   children: [
                     TextFormField(
                       validator: (val) {
-                        return val.isEmpty || val.length == 16
+                        return val.isEmpty || val.length != 16
                             ? 'Cek kembali NIK anda'
                             : null;
                       },
-                      controller: noKtp1,
+                      controller: noKtp,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.card_membership),
                         hintText: 'Nomor KTP',
                       ),
                     ),
                     TextFormField(
-                      controller: pass1,
+                      controller: pass,
                       validator: (val) {
                         return val.isEmpty || val.length < 6
                             ? 'Cek Password anda'
@@ -151,7 +148,7 @@ class _LoginPasienState extends State<LoginPasien> {
                                 borderRadius: new BorderRadius.circular(5.0))),
                         onPressed: () {
                           if (formKey.currentState.validate()) {
-                          _login();
+                            _login();
                           }
                         },
                         child: Text('Masuk'),
