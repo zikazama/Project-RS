@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aplikasi_rs/lupa_password.dart';
+import 'package:aplikasi_rs/registrasi_pasien.dart';
 import 'package:flutter/material.dart';
 import 'lupa_password.dart';
 import 'package:http/http.dart' as http;
@@ -178,10 +179,10 @@ class _LoginPasienState extends State<LoginPasien> {
                             backgroundColor: const Color(0xFFE7EEFE)),
                         // color:
                         onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => RegistrasiPasien()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegistrasiPasien()));
                         },
                         child: Text('Buat Akun'),
                       ),
