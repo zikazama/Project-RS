@@ -1,3 +1,4 @@
+import 'package:aplikasi_rs/Dashboard/chat/inbox.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -82,7 +83,12 @@ class _DashboardPasien extends State<DashboardPasien> {
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
-                            press: () {},
+                            press: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatRoom()));
+                            },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/homecare.svg",
