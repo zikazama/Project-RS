@@ -1,4 +1,5 @@
 import 'package:aplikasi_rs/Dashboard/chat/inbox.dart';
+import 'package:aplikasi_rs/Dashboard/daftar_online.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -78,7 +79,13 @@ class _DashboardPasien extends State<DashboardPasien> {
                           CategoryCard(
                             srcSvg: "assets/icons/registration.svg",
                             title: "Daftar\nonline",
-                            press: () {},
+                            press: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PendaftaranOnline()));
+                            },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
