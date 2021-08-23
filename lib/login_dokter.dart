@@ -1,14 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
-import 'package:aplikasi_rs/lupa_password.dart';
-import 'package:aplikasi_rs/services/services.dart';
-import 'package:flutter/material.dart';
-import 'lupa_password.dart';
-import 'registrasi_pasien.dart';
 import 'package:http/http.dart' as http;
-import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 
 class LoginDokter extends StatefulWidget {
   @override
