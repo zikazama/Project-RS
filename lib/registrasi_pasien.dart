@@ -1,8 +1,8 @@
 import 'package:aplikasi_rs/model/model.dart';
 import 'package:flutter/material.dart';
 import 'login_pasien.dart';
-import 'services/services.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -12,10 +12,23 @@ class RegistrasiPasien extends StatefulWidget {
   _RegistrasiPasienState createState() => _RegistrasiPasienState();
 }
 
+DateTime selectedDate = DateTime.now();
+String created_at = selectedDate.toString();
+
 class _RegistrasiPasienState extends State<RegistrasiPasien> {
-  Registrasi registrasi = new Registrasi();
+  TextEditingController namaLengkap = new TextEditingController();
+  TextEditingController tanggalLahir = new TextEditingController();
+  TextEditingController noKtp = new TextEditingController();
+  TextEditingController jenisKelamin = new TextEditingController();
+  TextEditingController agama = new TextEditingController();
+  TextEditingController pendidikan = new TextEditingController();
+  TextEditingController alamat = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController noHp = new TextEditingController();
+  TextEditingController pass = new TextEditingController();
+  TextEditingController confirmPass = new TextEditingController();
+
   final formKey = GlobalKey<FormState>();
-  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
