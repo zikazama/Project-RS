@@ -1,200 +1,284 @@
+import 'package:aplikasi_rs/model/model.dart';
 import 'package:flutter/material.dart';
+import 'login_pasien.dart';
+import 'services/services.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class DashboardDokter extends StatefulWidget {
+class RegistrasiPasien extends StatefulWidget {
   @override
-  _DashboardDokterState createState() => _DashboardDokterState();
+  _RegistrasiPasienState createState() => _RegistrasiPasienState();
 }
 
-class _DashboardDokterState extends State<DashboardDokter> {
+class _RegistrasiPasienState extends State<RegistrasiPasien> {
+  Registrasi registrasi = new Registrasi();
+  final formKey = GlobalKey<FormState>();
+  DateTime selectedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Positioned(
-                  child: Container(
-                    height: 250,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                      image:
-                          AssetImage('assets/images/wave_Dashboard_Dokter.png'),
-                      fit: BoxFit.fill,
-                    )),
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(left: 30.0),
-                                margin: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).size.height *
-                                        0.120),
-                                child: Text(
-                                  "Selamat Datang Dokter",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ))),
-                        Positioned(
-                            child: GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            alignment: Alignment.topRight,
-                            padding: EdgeInsets.only(right: 20.0),
-                            margin: EdgeInsets.only(
-                                top:
-                                    MediaQuery.of(context).size.height * 0.100),
-                            child: Icon(
-                              Icons.notifications,
-                              color: Colors.white,
-                              size: 33,
-                            ),
-                          ),
-                        ))
-                      ],
+        resizeToAvoidBottomInset: false,
+        backgroundColor: const Color(0xFF0068F7),
+        body: SingleChildScrollView(
+          child: Column(children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 50),
+              child: Column(
+                children: <Widget>[
+                  Center(
+                    child: Text(
+                      'PENDAFTARAN\nPASIEN BARU',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontSize: 24.0),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Text("Riwayat Konsultasi Dengan Pasien",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                )),
-            SizedBox(height: 24),
-            Container(
-              margin: const EdgeInsets.only(left: 24.0, right: 24.0),
-              padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 25),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: -1,
-                    blurRadius: 21,
-                    offset: Offset(0, 0),
+                  SizedBox(height: 10),
+                  Card(
+                    child: Container(
+                      padding: EdgeInsets.all(25.0),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.140),
+                      width: MediaQuery.of(context).size.width,
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            new TextFormField(
+                              controller: namaLengkap,
+                              validator: (val) {
+                                return val.isEmpty || val.length <= 2
+                                    ? 'Please provide username'
+                                    : null;
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.person),
+                                hintText: 'Nama Lengkap',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              controller: noHp,
+                              validator: (val) {
+                                return val.length < 14 ? 'cek' : null;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.phone),
+                                  hintText: 'Nomor HP'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            SizedBox(height: 10),
+                            TextFormField(
+                              onTap: () {
+                                showDatePicker(
+                                        context: context,
+                                        initialDate: selectedDate,
+                                        firstDate: DateTime(1),
+                                        lastDate: DateTime.now())
+                                    .then((date) {
+                                  setState(() {
+                                    selectedDate = date;
+                                    tanggalLahir.text =
+                                        "${selectedDate.toLocal()}"
+                                            .split(' ')[0];
+                                  });
+                                });
+                              },
+                              controller: tanggalLahir,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.date_range),
+                                hintText: 'Tanggal Lahir',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            new DropdownButtonFormField<String>(
+                              hint: Text('Jenis Kelamin'),
+                              items: [
+                                DropdownMenuItem(
+                                  child: Text('Laki-Laki'),
+                                  value: 'l',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text('Perempuan'),
+                                  value: 'p',
+                                )
+                              ],
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Relationship is required';
+                                }
+                              },
+                              onChanged: (val) {
+                                jenisKelamin.text = val;
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              controller: noKtp,
+                              validator: (val) {
+                                return val.length < 16 ? 'cek' : null;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.card_membership),
+                                  hintText: 'Nomor KTP'),
+                              keyboardType: TextInputType.number,
+                            ),
+                            SizedBox(height: 10),
+                            new DropdownButtonFormField<String>(
+                              hint: Text('Agama'),
+                              items: <String>[
+                                'Islam',
+                                'Kristen',
+                                'Hindu',
+                                'Buddha',
+                                'Khonghucu'
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Relationship is required';
+                                }
+                              },
+                              onChanged: (val) {
+                                agama.text = val;
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              controller: pendidikan,
+                              validator: (val) {
+                                if (val.isEmpty) {
+                                  return 'Empty';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.card_membership),
+                                hintText: 'Pendidikan',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              controller: email,
+                              validator: (val) {
+                                return RegExp(
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        .hasMatch(val)
+                                    ? null
+                                    : 'Enter correct email';
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.mail),
+                                  hintText: 'Email'),
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              controller: alamat,
+                              validator: (val) {
+                                if (val.isEmpty) {
+                                  return 'Empty';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.mail),
+                                hintText: 'Alamat',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              obscureText: true,
+                              controller: pass,
+                              validator: (val) {
+                                return val.length < 6
+                                    ? 'Enter Password 6+ characters'
+                                    : null;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.vpn_key),
+                                  hintText: 'Password',
+                                  suffixIcon: InkWell(
+                                    child: Icon(Icons.visibility_off),
+                                  )),
+                            ),
+                            SizedBox(height: 10),
+                            new TextFormField(
+                              obscureText: true,
+                              controller: confirmPass,
+                              validator: (val) {
+                                if (val != pass.text) {
+                                  return 'Not Match';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.vpn_key),
+                                  hintText: 'Konfirmasi Password',
+                                  suffixIcon: InkWell(
+                                    child: Icon(Icons.visibility_off),
+                                  )),
+                            ),
+                            SizedBox(height: 25),
+                            new Container(
+                              height: 50,
+                              width: 300,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(5.0))),
+                                onPressed: () {
+                                  if (formKey.currentState.validate()) {
+                                    registrasiPasien.connectToAPI(
+                                        namaLengkap.text,
+                                        noHp.text,
+                                        jenisKelamin.text,
+                                        noKtp.text,
+                                        agama.text,
+                                        pendidikan.text,
+                                        alamat.text,
+                                        email.text,
+                                        created_at,
+                                        confirmPass.text);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginPasien()));
+                                  }
+                                },
+                                child: Text('Daftar'),
+                              ),
+                            ),
+                            new Container(
+                              child: Container(
+                                  child: Center(
+                                      child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginPasien()));
+                                },
+                                child: Text('Kembali'),
+                              ))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
-              ),
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.search_rounded,
-                    color: const Color(0xFF8F8F8F),
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                      child: TextField(
-                          style: TextStyle(fontSize: 17),
-                          cursorColor: Colors.black,
-                          decoration: const InputDecoration(
-                            hintText: 'Cari Pasien',
-                            hintStyle: TextStyle(fontSize: 17),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ))),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 25),
-                child: Inbox(),
               ),
             )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Inbox extends StatefulWidget {
-  @override
-  _InboxState createState() => _InboxState();
-}
-
-class _InboxState extends State<Inbox> {
-  //data dabbing
-  List userDokter = [
-    {
-      'name': 'Susanto',
-      'Status': 'Dokter spesialis THT',
-    },
-    {
-      'name': 'Susanti',
-      'Status': 'Dokter spesialis penyakit dalam',
-    },
-    {
-      'name': 'Ginting',
-      'Status': 'Dokter spesialis HTH',
-    },
-    {
-      'name': 'Tes',
-      'Status': 'Dokter spesialis beda',
-    },
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      //physics: NeverScrollableScrollPhysics(),
-      itemCount: userDokter.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          padding: const EdgeInsets.only(left: 15, bottom: 15, top: 15),
-          // margin: const EdgeInsets.only(bottom: 40, left: 24, right: 24),
-          height: 90,
-          decoration: BoxDecoration(
-              border: Border(
-            bottom: BorderSide(width: 1.0, color: Color(0xFF000000)),
-          )),
-          child: Row(
-            children: <Widget>[
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(50)),
-              ),
-              SizedBox(
-                width: 14,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Dr. ${userDokter[index]['name']}',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    userDokter[index]['Status'],
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    );
+          ]),
+        ));
   }
 }
