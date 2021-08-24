@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/lupa_password.dart';
 import 'package:aplikasi_rs/models/model_pasien.dart';
+import 'package:aplikasi_rs/registrasi_pasien.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -57,7 +58,7 @@ class _LoginPasienState extends State<LoginPasien> {
         controllerPasien.pasien.value =
             modelPasienFromJson(jsonEncode(value['user']));
         print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
-        Get.offAll(() => DashboardPasien());
+        Get.to(() => DashboardPasien());
       } else {
         Get.defaultDialog(title: "Info", content: Text(value['message']));
       }
@@ -184,10 +185,10 @@ class _LoginPasienState extends State<LoginPasien> {
                               backgroundColor: const Color(0xFFE7EEFE)),
                           // color:
                           onPressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => RegistrasiPasien()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegistrasiPasien()));
                           },
                           child: Text('Buat Akun'),
                         ),
