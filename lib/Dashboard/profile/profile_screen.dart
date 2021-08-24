@@ -89,8 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 DataRow(
                   title: "Tanggal Lahir",
-                  value: DateFormat("dd-MM-yyyy")
-                      .format(controllerPasien.pasien.value.tanggalLahir),
+                  value: controllerPasien.pasien.value.tanggalLahir,
                 ),
                 SizedBox(
                   height: 19,

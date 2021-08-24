@@ -53,17 +53,18 @@ class _LoginPasienState extends State<LoginPasien> {
       offLoading();
       print("value ui " + value.toString());
 
-      if (value['response_code'] == '00') {
+      if (value['status'] == true) {
         controllerPasien.pasien.value =
-            modelPasienFromJson(jsonEncode(value['data']));
+            modelPasienFromJson(jsonEncode(value['user']));
         print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
         Get.to(() => DashboardPasien());
       } else {
         Get.defaultDialog(
-            title: "Info", content: Text(value['response_error']));
+            title: "Info", content: Text(value['message']));
       }
     }).catchError((e) {
       print("error ui " + e.toString());
+      Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
     });
   }
 

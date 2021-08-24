@@ -1,3 +1,5 @@
+import 'package:aplikasi_rs/Dashboard/chat/inbox.dart';
+import 'package:aplikasi_rs/Dashboard/daftar_online.dart';
 import 'package:aplikasi_rs/Dashboard/detail_informasi.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:aplikasi_rs/Dashboard/profile/profile_screen.dart';
@@ -87,12 +89,16 @@ class _DashboardPasien extends State<DashboardPasien> {
                           CategoryCard(
                             srcSvg: "assets/icons/registration.svg",
                             title: "Daftar\nonline",
-                            press: () {},
+                            press: () {
+                              Get.to(()=>PendaftaranOnline());
+                            },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
-                            press: () {},
+                            press: () {
+                              Get.to(()=>ChatRoom());
+                            },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/homecare.svg",

@@ -12,34 +12,21 @@ class AuthServices {
     print(basicAuth);
 
     try {
-      final response = await http.get(
+      final response = await http.post(
           Uri.parse(
-              "https://api.rsbmgeriatri.com/api/Pasien?bhayangkara-key=bhayangkara123"),
-          headers: <String, String>{'authorization': basicAuth});
+              "https://api.rsbmgeriatri.com/api/Pasien/login"),
+          headers: <String, String>{'authorization': basicAuth}, body: {
+            "no_ktp" : noKtp,
+            "password" : password,
+      });
 
       print("hasil auth : " + response.body.toString());
-      var data;
       //response sukses
-      if (response.statusCode == 200) {
-        List listPasien = jsonDecode(response.body);
-        print(listPasien.runtimeType.toString());
-        print(listPasien[0].toString());
-        //kembalikan data sesuai username password
-        listPasien.forEach((element) {
-          print("ktp : " + element.containsValue(noKtp).toString());
-          print("password : " + element.containsValue(password).toString());
-          if (element.containsValue(noKtp) && element.containsValue(password)) {
-            print("cek" + element.runtimeType.toString());
+        return jsonDecode(response.body);
 
-            data = element;
-          }
-        });
-      }
-      print("data : " + data.toString());
-
-      return data;
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
