@@ -1,4 +1,4 @@
-import 'package:aplikasi_rs/models/models.dart';
+import 'package:aplikasi_rs/services/registrasi_pasien_services.dart';
 import 'package:flutter/material.dart';
 import 'login_pasien.dart';
 import 'package:flutter/cupertino.dart';
@@ -249,16 +249,18 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                             new BorderRadius.circular(5.0))),
                                 onPressed: () {
                                   if (formKey.currentState.validate()) {
-                                    registrasiPasien.connectToAPI(
+                                    registrasiPasienServices.connectToAPI(
                                         namaLengkap.text,
                                         noHp.text,
                                         jenisKelamin.text,
+                                        tanggalLahir.text,
                                         noKtp.text,
                                         agama.text,
                                         pendidikan.text,
                                         alamat.text,
                                         email.text,
                                         created_at,
+                                        "0000-00-00 00:00:00",
                                         confirmPass.text);
                                     Navigator.push(
                                         context,
