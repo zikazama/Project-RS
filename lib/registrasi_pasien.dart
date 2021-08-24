@@ -12,8 +12,9 @@ class RegistrasiPasien extends StatefulWidget {
   _RegistrasiPasienState createState() => _RegistrasiPasienState();
 }
 
-DateTime selectedDate = DateTime.now();
+DateTime selectedDate = new DateTime.now();
 String created_at = selectedDate.toString();
+//int yearNow = int.parse("${selectedDate.toLocal()}".split('-')[0]);
 
 class _RegistrasiPasienState extends State<RegistrasiPasien> {
   TextEditingController namaLengkap = new TextEditingController();
@@ -27,6 +28,8 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
   TextEditingController noHp = new TextEditingController();
   TextEditingController pass = new TextEditingController();
   TextEditingController confirmPass = new TextEditingController();
+  bool isHiddenPassword = true;
+  bool isHiddenPassword1 = true;
 
   final formKey = GlobalKey<FormState>();
 
@@ -63,7 +66,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                               controller: namaLengkap,
                               validator: (val) {
                                 return val.isEmpty || val.length <= 2
-                                    ? 'Please provide username'
+                                    ? 'Cek kembali nama lengkap anda'
                                     : null;
                               },
                               decoration: InputDecoration(
@@ -75,7 +78,9 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                             new TextFormField(
                               controller: noHp,
                               validator: (val) {
-                                return val.length < 10 ? 'cek' : null;
+                                return val.length < 10
+                                    ? 'Nomer HP anda tidak valid'
+                                    : null;
                               },
                               decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.phone),
@@ -84,11 +89,28 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                             ),
                             SizedBox(height: 10),
                             TextFormField(
+                              validator: (val) {
+                                if (val.length == 0) {
+                                  return 'Masukan tanggal lahir anda';
+                                } else if ((int.parse("${DateTime.now()}"
+                                                .split('-')[0]) -
+                                            17) -
+                                        int.parse("${val}".split('-')[0]) <
+                                    0) {
+                                  return 'Anda belum cukup usia';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              readOnly: true,
                               onTap: () {
                                 showDatePicker(
                                         context: context,
                                         initialDate: selectedDate,
-                                        firstDate: DateTime(1),
+                                        initialDatePickerMode:
+                                            DatePickerMode.year,
+                                        cancelText: "",
+                                        firstDate: DateTime(1821),
                                         lastDate: DateTime.now())
                                     .then((date) {
                                   setState(() {
@@ -120,7 +142,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                               ],
                               validator: (value) {
                                 if (value == null) {
-                                  return 'Relationship is required';
+                                  return 'Pilih gender anda';
                                 }
                               },
                               onChanged: (val) {
@@ -131,7 +153,9 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                             new TextFormField(
                               controller: noKtp,
                               validator: (val) {
-                                return val.length < 16 ? 'cek' : null;
+                                return val.length < 16
+                                    ? 'Cek kembali nomer KTP anda'
+                                    : null;
                               },
                               decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.card_membership),
@@ -155,7 +179,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                               }).toList(),
                               validator: (value) {
                                 if (value == null) {
-                                  return 'Relationship is required';
+                                  return 'Pilih agama anda';
                                 }
                               },
                               onChanged: (val) {
@@ -167,12 +191,12 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                               controller: pendidikan,
                               validator: (val) {
                                 if (val.isEmpty) {
-                                  return 'Empty';
+                                  return 'Isikan pendidikan terakhir anda';
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.card_membership),
+                                prefixIcon: Icon(Icons.school),
                                 hintText: 'Pendidikan',
                               ),
                             ),
@@ -184,7 +208,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                         .hasMatch(val)
                                     ? null
-                                    : 'Enter correct email';
+                                    : 'Email anda salah';
                               },
                               decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.mail),
@@ -196,38 +220,39 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                               controller: alamat,
                               validator: (val) {
                                 if (val.isEmpty) {
-                                  return 'Empty';
+                                  return 'Isi alamat anda';
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.mail),
+                                prefixIcon: Icon(Icons.home),
                                 hintText: 'Alamat',
                               ),
                             ),
                             SizedBox(height: 10),
                             new TextFormField(
-                              obscureText: true,
+                              obscureText: isHiddenPassword,
                               controller: pass,
                               validator: (val) {
                                 return val.length < 6
-                                    ? 'Enter Password 6+ characters'
+                                    ? 'Buat password minimal 6 karakter'
                                     : null;
                               },
                               decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.vpn_key),
                                   hintText: 'Password',
                                   suffixIcon: InkWell(
+                                    onTap: _togglePasswordView,
                                     child: Icon(Icons.visibility_off),
                                   )),
                             ),
                             SizedBox(height: 10),
                             new TextFormField(
-                              obscureText: true,
+                              obscureText: isHiddenPassword1,
                               controller: confirmPass,
                               validator: (val) {
                                 if (val != pass.text) {
-                                  return 'Not Match';
+                                  return 'Password anda salah, coba periksa lagi';
                                 }
                                 return null;
                               },
@@ -235,6 +260,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                   prefixIcon: Icon(Icons.vpn_key),
                                   hintText: 'Konfirmasi Password',
                                   suffixIcon: InkWell(
+                                    onTap: _togglePasswordView1,
                                     child: Icon(Icons.visibility_off),
                                   )),
                             ),
@@ -295,5 +321,23 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
             )
           ]),
         ));
+  }
+
+  void _togglePasswordView() {
+    if (isHiddenPassword == true) {
+      isHiddenPassword = false;
+    } else {
+      isHiddenPassword = true;
+    }
+    setState(() {});
+  }
+
+  void _togglePasswordView1() {
+    if (isHiddenPassword1 == true) {
+      isHiddenPassword1 = false;
+    } else {
+      isHiddenPassword1 = true;
+    }
+    setState(() {});
   }
 }
