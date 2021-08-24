@@ -75,7 +75,7 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                             new TextFormField(
                               controller: noHp,
                               validator: (val) {
-                                return val.length < 14 ? 'cek' : null;
+                                return val.length < 10 ? 'cek' : null;
                               },
                               decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.phone),
