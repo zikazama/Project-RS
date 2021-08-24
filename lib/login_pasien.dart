@@ -57,10 +57,9 @@ class _LoginPasienState extends State<LoginPasien> {
         controllerPasien.pasien.value =
             modelPasienFromJson(jsonEncode(value['user']));
         print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
-        Get.to(() => DashboardPasien());
+        Get.offAll(() => DashboardPasien());
       } else {
-        Get.defaultDialog(
-            title: "Info", content: Text(value['message']));
+        Get.defaultDialog(title: "Info", content: Text(value['message']));
       }
     }).catchError((e) {
       print("error ui " + e.toString());
@@ -82,9 +81,9 @@ class _LoginPasienState extends State<LoginPasien> {
                 height: 400,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/wave.png'),
-                      fit: BoxFit.cover,
-                    )),
+                  image: AssetImage('assets/images/wave.png'),
+                  fit: BoxFit.cover,
+                )),
                 child: Stack(
                   children: <Widget>[
                     Positioned(
@@ -100,10 +99,10 @@ class _LoginPasienState extends State<LoginPasien> {
                             margin: EdgeInsets.only(top: 200),
                             child: Center(
                                 child: Text(
-                                  "SELAMAT DATANG DI APLIKASI\nMOBILE BHAYANGKARA GERIATRI",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ))))
+                              "SELAMAT DATANG DI APLIKASI\nMOBILE BHAYANGKARA GERIATRI",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white),
+                            ))))
                   ],
                 ),
               ),
@@ -152,7 +151,7 @@ class _LoginPasienState extends State<LoginPasien> {
                           style: ElevatedButton.styleFrom(
                               shape: new RoundedRectangleBorder(
                                   borderRadius:
-                                  new BorderRadius.circular(5.0))),
+                                      new BorderRadius.circular(5.0))),
                           onPressed: () {
                             if (formKey.currentState.validate()) {
                               _login();
@@ -166,14 +165,14 @@ class _LoginPasienState extends State<LoginPasien> {
                         child: Container(
                             child: Center(
                                 child: TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ForgotPassword()));
-                                  },
-                                  child: Text('Lupa Password'),
-                                ))),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ForgotPassword()));
+                          },
+                          child: Text('Lupa Password'),
+                        ))),
                       ),
                       SizedBox(height: 15.0),
                       Container(
