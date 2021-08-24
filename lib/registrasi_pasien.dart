@@ -1,4 +1,4 @@
-import 'package:aplikasi_rs/model/model.dart';
+import 'package:aplikasi_rs/models/models.dart';
 import 'package:flutter/material.dart';
 import 'login_pasien.dart';
 import 'package:flutter/cupertino.dart';

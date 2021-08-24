@@ -1,7 +1,12 @@
+import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'mainscreen.dart';
 
-void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainScreen(),
-    ));
+void main() {
+  Get.put(ControllerPasien());
+  runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MainScreen(),
+  ));
+}

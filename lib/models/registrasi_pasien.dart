@@ -1,4 +1,4 @@
-part of 'model.dart';
+part of 'models.dart';
 
 class registrasiPasien {
   static Future<dynamic> connectToAPI(String nama_lengkap, no_hp, jenis_kelamin,
