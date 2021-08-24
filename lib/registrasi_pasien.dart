@@ -13,7 +13,7 @@ class RegistrasiPasien extends StatefulWidget {
 }
 
 DateTime selectedDate = new DateTime.now();
-String created_at = selectedDate.toString();
+String created_at = DateTime.now().toString();
 //int yearNow = int.parse("${selectedDate.toLocal()}".split('-')[0]);
 
 class _RegistrasiPasienState extends State<RegistrasiPasien> {
@@ -311,6 +311,9 @@ class _RegistrasiPasienState extends State<RegistrasiPasien> {
                                 child: Text('Kembali'),
                               ))),
                             ),
+                            SizedBox(
+                              height: 50,
+                            )
                           ],
                         ),
                       ),
