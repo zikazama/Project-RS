@@ -4,6 +4,7 @@ import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/lupa_password.dart';
 import 'package:aplikasi_rs/models/model_pasien.dart';
 import 'package:aplikasi_rs/registrasi_pasien.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -19,6 +20,7 @@ enum LoginStatus { notSignIn, signIn }
 
 class _LoginPasienState extends State<LoginPasien> {
   final ControllerPasien controllerPasien = Get.find<ControllerPasien>();
+  final ControllerChat controllerChat = Get.find<ControllerChat>();
   bool isHiddenPassword = true;
 
   bool _secureText = true;
@@ -50,18 +52,42 @@ class _LoginPasienState extends State<LoginPasien> {
     onLoading();
     return await controllerPasien
         .loginPasienController(no_ktp: noKtp.text, password: pass.text)
-        .then((value) {
-      offLoading();
+        .then((value) async {
       print("value ui " + value.toString());
 
       if (value['status'] == true) {
         controllerPasien.pasien.value =
             modelPasienFromJson(jsonEncode(value['user']));
+        controllerChat.user.update((val) {
+          val.uid = controllerPasien.pasien.value.idPasien;
+          val.name = controllerPasien.pasien.value.namaLengkap;
+          val.nik = controllerPasien.pasien.value.noKtp;
+          val.creationTime = controllerPasien.pasien.value.createdAt;
+        });
+        controllerChat.user.refresh();
         print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
+        print("nama user : " + controllerChat.user.value.name);
+        //CEK DOC USER DI FIREBASE
+        CollectionReference users =
+            FirebaseFirestore.instance.collection("users");
+        final checkUser = await users.doc(controllerChat.user.value.nik).get();
+        if (checkUser.data() == null) {
+          await users.doc(controllerChat.user.value.nik).set({
+            "uid": controllerChat.user.value.uid,
+            "name": controllerChat.user.value.name,
+            "nik": controllerChat.user.value.nik,
+            "creationTime": controllerChat.user.value.creationTime
+          });
+        }
+        offLoading();
+
         Get.to(() => DashboardPasien());
       } else {
+        offLoading();
+
         Get.defaultDialog(title: "Info", content: Text(value['message']));
       }
+      offLoading();
     }).catchError((e) {
       print("error ui " + e.toString());
       Get.snackbar("error", e.toString(), backgroundColor: Colors.red);

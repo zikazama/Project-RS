@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:aplikasi_rs/Dashboard/dashboard_dokter.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/models/model_dokter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,8 @@ class LoginDokter extends StatefulWidget {
 
 class _LoginDokterState extends State<LoginDokter> {
   ControllerDokter controllerDokter = Get.find<ControllerDokter>();
+  final ControllerChat controllerChat = Get.find<ControllerChat>();
+
   bool isHiddenPassword = true;
   TextEditingController ktp = new TextEditingController();
   TextEditingController pass = new TextEditingController();
@@ -36,19 +39,43 @@ class _LoginDokterState extends State<LoginDokter> {
     onLoading();
     return await controllerDokter
         .loginDokterController(no_ktp: ktp.text, password: pass.text)
-        .then((value) {
-      offLoading();
+        .then((value) async {
       print("value ui " + value.toString());
 
       if (value['status'] == true) {
         controllerDokter.dokter.value =
             modelDokterFromJson(jsonEncode(value['user']));
+        controllerChat.user.update((val) {
+          val.uid = controllerDokter.dokter.value.idDokter;
+          val.name = controllerDokter.dokter.value.namaDokter;
+          val.nik = controllerDokter.dokter.value.noKtp;
+          val.creationTime = "0000-00-00 00:00:00";
+        });
+        controllerChat.user.refresh();
         print("nama_lengkap" + controllerDokter.dokter.value.namaDokter);
+        //TODO : LETAKAN DI REGISTER DOKTER ATAUPUN PASIEN
+        //CEK DOC USER DI FIREBASE
+        CollectionReference users =
+            FirebaseFirestore.instance.collection("users");
+        final checkUser = await users.doc(controllerChat.user.value.nik).get();
+        if (checkUser.data() == null) {
+          await users.doc(controllerChat.user.value.nik).set({
+            "uid": controllerChat.user.value.uid,
+            "name": controllerChat.user.value.name,
+            "nik": controllerChat.user.value.nik,
+            "creationTime": "0000-00-00 00:00:00"
+          });
+        }
+        offLoading();
         Get.to(() => DashboardDokter());
       } else {
+        offLoading();
+
         Get.defaultDialog(title: "Info", content: Text(value['message']));
       }
     }).catchError((e) {
+      offLoading();
+
       print("error ui " + e.toString());
       Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
     });

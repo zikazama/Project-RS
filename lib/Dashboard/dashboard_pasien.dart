@@ -1,7 +1,7 @@
-import 'package:aplikasi_rs/Dashboard/chat/inbox.dart';
 import 'package:aplikasi_rs/Dashboard/daftar_online.dart';
 import 'package:aplikasi_rs/Dashboard/detail_informasi.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
+import 'package:aplikasi_rs/Dashboard/konsultasi_online/konsultasi_online.dart';
 import 'package:aplikasi_rs/Dashboard/profile/profile_screen.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/data/data.dart';
@@ -97,7 +97,7 @@ class _DashboardPasien extends State<DashboardPasien> {
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
                             press: () {
-                              Get.to(()=>ChatRoom());
+                              Get.to(()=>KonsultasiOnline());
                             },
                           ),
                           CategoryCard(

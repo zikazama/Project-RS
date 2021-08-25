@@ -1,10 +1,12 @@
 import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 import 'package:aplikasi_rs/config/theme.dart';
+import 'package:aplikasi_rs/controllers/controller_chat.dart';
 import 'package:aplikasi_rs/controllers/controller_dokter.dart';
 import 'package:aplikasi_rs/models/model_dokter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+
 List userDokter = [
   {
     'name': 'Susanto',
@@ -33,7 +35,8 @@ List userDokter = [
   {
     'name': 'Tes',
     'Status': 'Dokter spesialis beda',
-  },  {
+  },
+  {
     'name': 'Tes',
     'Status': 'Dokter spesialis beda',
   },
@@ -41,31 +44,45 @@ List userDokter = [
     'name': 'Tes',
     'Status': 'Dokter spesialis beda',
   },
-
 ];
 
-class ChatRoom extends StatefulWidget {
+class KonsultasiOnline extends StatefulWidget {
   @override
-  _ChatRoomState createState() => _ChatRoomState();
+  _KonsultasiOnlineState createState() => _KonsultasiOnlineState();
 }
 
-class _ChatRoomState extends State<ChatRoom> {
+class _KonsultasiOnlineState extends State<KonsultasiOnline> {
   ControllerDokter controllerDokter = Get.find<ControllerDokter>();
+  ControllerChat controllerChat = Get.find<ControllerChat>();
   bool loading = false;
   List<ModelDokter> _filterDokter = [];
 
-  _onLoading()=>setState(()=> loading = true);
-  _offLoading()=>setState(()=> loading = false);
+  _onLoading() => setState(() => loading = true);
+  _offLoading() => setState(() => loading = false);
 
-  getDataDokter()async{
+  makeNewChat(int index)async{
+    _onLoading();
+   return controllerChat.addNewConnection(
+        controllerChat.user.value.nik,
+        (_filterDokter.length > 0)
+            ? _filterDokter[index].namaDokter
+            : controllerDokter
+            .dokterList[index].noKtp).then((value) {
+              _offLoading();
+   }).catchError((e){
+     _offLoading();
+     Get.snackbar("error", "gagal", backgroundColor: Colors.red);
+   });
+  }
+
+  getDataDokter() async {
     _onLoading();
     await controllerDokter.getListDokterController().then((value) {
       print("value ui : " + value.toString());
       _offLoading();
-    }).catchError((e){
+    }).catchError((e) {
       _offLoading();
       print("error ui : " + e.toString());
-
     });
   }
 
@@ -97,119 +114,148 @@ class _ChatRoomState extends State<ChatRoom> {
         body: CustomScrollView(
           slivers: [
             SliverPersistentHeader(delegate: MyHeader()),
-            SliverAppBar(pinned: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            title: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: -1,
-                    blurRadius: 21,
-                    offset: Offset(0, 0),
-                  ),
-                ],
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: -1,
+                      blurRadius: 21,
+                      offset: Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.search_rounded,
+                      color: const Color(0xFF8F8F8F),
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                        child: TextField(
+                            onChanged: (v) {
+                              setState(() {
+                                _filterDokter = _buildSearchList(v);
+                              });
+                            },
+                            style: TextStyle(fontSize: 17),
+                            cursorColor: Colors.black,
+                            decoration: const InputDecoration(
+                              hintText: 'Cari Dokter',
+                              hintStyle: TextStyle(fontSize: 17),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                            ))),
+                  ],
+                ),
               ),
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.search_rounded,
-                    color: const Color(0xFF8F8F8F),
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                      child: TextField(
-                        onChanged: (v){
-                          setState(() {
-                            _filterDokter = _buildSearchList(v);
-                          });
-                        },
-                          style: TextStyle(fontSize: 17),
-                          cursorColor: Colors.black,
-                          decoration: const InputDecoration(
-                            hintText: 'Cari Dokter',
-                            hintStyle: TextStyle(fontSize: 17),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ))),
-                ],
-              ),
-            ),
               automaticallyImplyLeading: false,
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 20,),),
-            loading?SliverToBoxAdapter(child: SizedBox(height: 20,),):
-            Obx(()=>
-                controllerDokter.dokterList.length == 0?
-                SliverToBoxAdapter(child: Center(child: Text("Kosong")),)
-
-                :
-
-                SliverList(delegate: SliverChildBuilderDelegate(
-
-                  (BuildContext context, int index){
-                    return Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 15),
-                        margin: const EdgeInsets.only(bottom: 40, left: 24, right: 24),
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: -1,
-                              blurRadius: 20,
-                              offset: Offset(0, 0),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              height: 60,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  color: AppColor.primaryColor,
-                                  borderRadius: BorderRadius.circular(50)),
-                            ),
-                            SizedBox(
-                              width: 14,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  (_filterDokter.length > 0)? _filterDokter[index].namaDokter:controllerDokter.dokterList[index].namaDokter,
-                                  style: TextStyle(fontSize: 14),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 20,
+              ),
+            ),
+            loading
+                ? SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 20,
+                    ),
+                  )
+                : Obx(
+                    () => controllerDokter.dokterList.length == 0
+                        ? SliverToBoxAdapter(
+                            child: Center(child: Text("Kosong")),
+                          )
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                                  print("Nik : " +controllerDokter.dokterList[index].noKtp.toString());
+                            return Container(
+                              color: Colors.white,
+                              child: InkWell(
+                                onTap: () {
+                                 makeNewChat(index);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(left: 15),
+                                  margin: const EdgeInsets.only(
+                                      bottom: 40, left: 24, right: 24),
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: -1,
+                                        blurRadius: 20,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: 60,
+                                        width: 60,
+                                        decoration: BoxDecoration(
+                                            color: AppColor.primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                      ),
+                                      SizedBox(
+                                        width: 14,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            (_filterDokter.length > 0)
+                                                ? _filterDokter[index]
+                                                    .namaDokter
+                                                : controllerDokter
+                                                    .dokterList[index]
+                                                    .namaDokter,
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            (_filterDokter.length > 0)
+                                                ? _filterDokter[index].spesialis
+                                                : controllerDokter
+                                                    .dokterList[index]
+                                                    .spesialis,
+                                            style: TextStyle(fontSize: 14),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  (_filterDokter.length > 0)? _filterDokter[index].spesialis:controllerDokter.dokterList[index].spesialis,
-                                  style: TextStyle(fontSize: 14),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                childCount: (_filterDokter.length > 0)? _filterDokter.length:controllerDokter.dokterList.length
-              )),
-            )
+                              ),
+                            );
+                          },
+                                childCount: (_filterDokter.length > 0)
+                                    ? _filterDokter.length
+                                    : controllerDokter.dokterList.length)),
+                  )
           ],
         ),
       ),
@@ -441,7 +487,6 @@ class Inbox extends StatefulWidget {
 //data dabbing
 
 class _InboxState extends State<Inbox> {
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
