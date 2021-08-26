@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class registrasiPasienServices {
-  static Future<void> connectToAPI(
+  static Future connectToAPI(
       String nama_lengkap,
       no_hp,
       jenis_kelamin,
@@ -40,16 +41,46 @@ class registrasiPasienServices {
     };
     // print("cetak data : " + data.toString());
     try {
-      final response = await http.post(Uri.parse(apiURL),
-          headers: <String, String>{'authorization': basicAuth}, body: data);
-
+      final response = await http.get(Uri.parse(apiURL),
+          headers: <String, String>{'authorization': basicAuth});
       print('Status code: ${response.statusCode}');
-      // print('Body: ${response.body}');
-      if (response.statusCode == 201) {
-        return jsonDecode(response.body).toString();
+      print('response Body: ' + response.statusCode.toString());
+      print('Body: ${response.runtimeType.toString()}');
+      bool flagRegis = false;
+
+      if (response.statusCode == 200) {
+        List listPasiens = jsonDecode(response.body);
+
+        listPasiens.forEach((element) {
+          if (element['email'] == email) {
+            print("ada");
+            Get.defaultDialog(
+                title: "Info", middleText: "Email sudah terdaftar");
+            flagRegis = false;
+            throw false;
+          } else if (element['no_ktp'] == no_ktp) {
+            print("ada");
+            Get.defaultDialog(title: "Info", middleText: "NIK sudah terdaftar");
+            flagRegis = false;
+            throw false;
+          }
+        });
       }
+      // } else if (response.statusCode == 404) {
+      //   print("masuk");
+
+      //   return true;
+      // }
+      // final regisResponse = await http.post(Uri.parse(apiURL),
+      //     headers: <String, String>{'authorization': basicAuth}, body: data);
+      // print("regisResposne " + regisResponse.statusCode.toString());
+      // if (regisResponse.statusCode == 200) {
+      //   return jsonDecode(regisResponse.body);
+      // }
+      // return jsonDecode(regisResponse.body);
+      return true;
     } catch (e) {
-      print("error editProfile Services" + e.toString());
+      print("error connectToAPI Services" + e.toString());
     }
   }
 }

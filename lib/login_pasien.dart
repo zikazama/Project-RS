@@ -54,41 +54,45 @@ class _LoginPasienState extends State<LoginPasien> {
         .loginPasienController(no_ktp: noKtp.text, password: pass.text)
         .then((value) async {
       print("value ui " + value.toString());
-
-      if (value['status'] == true) {
-        controllerPasien.pasien.value =
-            modelPasienFromJson(jsonEncode(value['user']));
-        controllerChat.user.update((val) {
-          val.uid = controllerPasien.pasien.value.idPasien;
-          val.name = controllerPasien.pasien.value.namaLengkap;
-          val.nik = controllerPasien.pasien.value.noKtp;
-          val.creationTime = controllerPasien.pasien.value.createdAt;
-        });
-        controllerChat.user.refresh();
-        print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
-        print("nama user : " + controllerChat.user.value.name);
-        //CEK DOC USER DI FIREBASE
-        CollectionReference users =
-            FirebaseFirestore.instance.collection("users");
-        final checkUser = await users.doc(controllerChat.user.value.nik).get();
-        if (checkUser.data() == null) {
-          await users.doc(controllerChat.user.value.nik).set({
-            "uid": controllerChat.user.value.uid,
-            "name": controllerChat.user.value.name,
-            "nik": controllerChat.user.value.nik,
-            "creationTime": controllerChat.user.value.creationTime
+      if (value != null) {
+        if (value['status'] == true) {
+          controllerPasien.pasien.value =
+              modelPasienFromJson(jsonEncode(value['user']));
+          controllerChat.user.update((val) {
+            val.uid = controllerPasien.pasien.value.idPasien;
+            val.name = controllerPasien.pasien.value.namaLengkap;
+            val.nik = controllerPasien.pasien.value.noKtp;
+            val.creationTime = controllerPasien.pasien.value.createdAt;
           });
+          controllerChat.user.refresh();
+          print("nama_lengkap" + controllerPasien.pasien.value.namaLengkap);
+          print("nama user : " + controllerChat.user.value.name);
+          //CEK DOC USER DI FIREBASE
+          CollectionReference users =
+              FirebaseFirestore.instance.collection("users");
+          final checkUser =
+              await users.doc(controllerChat.user.value.nik).get();
+          if (checkUser.data() == null) {
+            await users.doc(controllerChat.user.value.nik).set({
+              "uid": controllerChat.user.value.uid,
+              "name": controllerChat.user.value.name,
+              "nik": controllerChat.user.value.nik,
+              "creationTime": controllerChat.user.value.creationTime
+            });
+          }
+          offLoading();
+
+          Get.to(() => DashboardPasien());
+        } else {
+          offLoading();
+
+          Get.defaultDialog(title: "Info", content: Text(value['message']));
         }
-        offLoading();
-
-        Get.to(() => DashboardPasien());
-      } else {
-        offLoading();
-
-        Get.defaultDialog(title: "Info", content: Text(value['message']));
       }
+
       offLoading();
     }).catchError((e) {
+      offLoading();
       print("error ui " + e.toString());
       Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
     });
