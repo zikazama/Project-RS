@@ -112,4 +112,42 @@ class PasienServices {
       print("error editProfile Services" + e.toString());
     }
   }
+
+  Future<dynamic> sendHomeCare(
+      {@required idPasien,
+      @required String namaPasien,
+      @required String noHp,
+      @required String latitude,
+      @required String longitude,
+      @required String keluhan,
+      @required String kondisiPasien}) async {
+    String usernameAuth = "admin";
+    String passwordAuth = "1234";
+    String basicAuth =
+        'Basic ' + base64Encode(utf8.encode('$usernameAuth:$passwordAuth'));
+    print("$latitude and $longitude");
+    try {
+      final response = await http.post(
+          Uri.parse(
+              "https://api.rsbmgeriatri.com/api/Homecare?bhayangkara-key=bhayangkara123"),
+          headers: <String, String>{
+            'authorization': basicAuth
+          },
+          body: {
+            "pasien_id": idPasien,
+            "nama_pasien": namaPasien,
+            "no_hp": noHp,
+            "longitude": longitude,
+            "latitude": latitude,
+            "keluhan": keluhan,
+            "kondisi_saat_ini": kondisiPasien
+          });
+
+      if (response.statusCode == 201) {
+        return jsonDecode(response.body);
+      }
+    } catch (e) {
+      print("error editProfile Services" + e.toString());
+    }
+  }
 }
