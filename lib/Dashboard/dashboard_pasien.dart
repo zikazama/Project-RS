@@ -9,7 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'homecare.dart';
+import 'package:aplikasi_rs/Dashboard/home_care/homecare.dart';
 
 class DashboardPasien extends StatefulWidget {
   @override
@@ -59,43 +59,43 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                 height: 250,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/wave_dashboard.png'),
-                      fit: BoxFit.cover,
-                    )),
+                  image: AssetImage('assets/images/wave_dashboard.png'),
+                  fit: BoxFit.cover,
+                )),
                 child: Stack(
                   children: <Widget>[
                     Positioned(
                         child: Container(
                             margin: EdgeInsets.only(
                                 bottom:
-                                MediaQuery.of(context).size.height * 0.120),
+                                    MediaQuery.of(context).size.height * 0.120),
                             child: Center(
                                 child: Text(
-                                  "Dashboard",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                )))),
+                              "Dashboard",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            )))),
                     Positioned(
                         child: Container(
                             padding: EdgeInsets.only(left: 30.0),
                             margin: EdgeInsets.only(
                                 top:
-                                MediaQuery.of(context).size.height * 0.100),
+                                    MediaQuery.of(context).size.height * 0.100),
                             child: SafeArea(
                                 child: Obx(
-                                      () => Text(
-                                    "Selamat datang " +
-                                        controllerPasien.pasien.value.namaLengkap,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15),
-                                  ),
-                                ))))
+                              () => Text(
+                                "Selamat datang " +
+                                    controllerPasien.pasien.value.namaLengkap,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15),
+                              ),
+                            ))))
                   ],
                 ),
               ),
@@ -121,14 +121,14 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                             srcSvg: "assets/icons/registration.svg",
                             title: "Daftar\nonline",
                             press: () {
-                              Get.to(()=>PendaftaranOnline());
+                              Get.to(() => PendaftaranOnline());
                             },
                           ),
                           CategoryCard(
                             srcSvg: "assets/icons/cs.svg",
                             title: "Konsultasi\nOnline",
                             press: () {
-                              Get.to(()=>KonsultasiOnline());
+                              Get.to(() => KonsultasiOnline());
                             },
                           ),
                           CategoryCard(
@@ -161,8 +161,8 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                       ),
                     ),
                     Container(
-                      // margin: EdgeInsets.only(
-                      //     bottom: MediaQuery.of(context).size.height * 0.270),
+                        // margin: EdgeInsets.only(
+                        //     bottom: MediaQuery.of(context).size.height * 0.270),
                         child: Container(
                             margin: EdgeInsets.symmetric(vertical: 10),
                             child: Text(
@@ -176,37 +176,37 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                     //INFORMASI GERIATRI
                     Expanded(
                         child: Container(
-                          child: ListView(
-                            shrinkWrap: true,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  InformasiCard(
-                                    modelInformasi: dummyContent[0],
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => DetailInformasi(
-                                                  informasi: dummyContent[0])));
-                                    },
-                                  ),
-                                  InformasiCard(
-                                    modelInformasi: dummyContent[1],
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => DetailInformasi(
-                                                  informasi: dummyContent[1])));
-                                    },
-                                  ),
-                                ],
+                              InformasiCard(
+                                modelInformasi: dummyContent[0],
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailInformasi(
+                                              informasi: dummyContent[0])));
+                                },
+                              ),
+                              InformasiCard(
+                                modelInformasi: dummyContent[1],
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailInformasi(
+                                              informasi: dummyContent[1])));
+                                },
                               ),
                             ],
                           ),
-                        ))
+                        ],
+                      ),
+                    ))
                   ],
                 ),
               ),
@@ -300,32 +300,32 @@ class InformasiCard extends StatelessWidget {
             ),
             Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            modelInformasi['title'],
-                            maxLines: 3,
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w500),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )),
-                    Expanded(
-                        flex: 1,
-                        child: Text(
-                          modelInformasi['subTitle'],
-                          maxLines: 4,
-                          style:
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        modelInformasi['title'],
+                        maxLines: 3,
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: Text(
+                      modelInformasi['subTitle'],
+                      maxLines: 4,
+                      style:
                           TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
-                          overflow: TextOverflow.ellipsis,
-                        ))
-                  ],
-                ))
+                      overflow: TextOverflow.ellipsis,
+                    ))
+              ],
+            ))
           ],
         ),
       ),
