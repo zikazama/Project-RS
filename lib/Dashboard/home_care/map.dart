@@ -11,15 +11,21 @@ class Maps extends StatefulWidget {
 }
 
 class _MapsState extends State<Maps> {
-  BitmapDescriptor customIcon;
-  Set<Marker> markers;
+  BitmapDescriptor customIcon, mapMarker;
+  Set<Marker> markers = {};
+  GoogleMapController _controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCurrentLocation();
     markers = Set.from([]);
+    setCustomMarker();
+  }
+
+  void setCustomMarker() async {
+    mapMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), "assets/icons/current-location.png");
   }
 
   Future getCurrentLocation() async {
@@ -40,6 +46,18 @@ class _MapsState extends State<Maps> {
         });
       });
     }
+  }
+
+  void _onMapCreated(GoogleMapController _cntrl) {
+    setState(() {
+      _controller = _cntrl;
+      markers.add(Marker(
+        markerId: MarkerId("id-1"),
+        position: LatLng(latitudeMap, longitudeMap),
+        icon: mapMarker,
+        //infoWindow: InfoWindow(title: "Posisi anda")
+      ));
+    });
   }
 
   @override
@@ -77,6 +95,7 @@ class _MapsState extends State<Maps> {
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10))),
                   child: GoogleMap(
+                    onMapCreated: _onMapCreated,
                     markers: markers,
                     onTap: (pos) {
                       print(pos);
@@ -101,6 +120,7 @@ class _MapsState extends State<Maps> {
                   )),
               GestureDetector(
                 onTap: () {
+                  getCurrentLocation();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeCare()));
                 },
