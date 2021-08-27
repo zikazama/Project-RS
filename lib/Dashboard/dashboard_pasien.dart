@@ -5,6 +5,7 @@ import 'package:aplikasi_rs/Dashboard/konsultasi_online/konsultasi_online.dart';
 import 'package:aplikasi_rs/Dashboard/profile/profile_screen.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/data/data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -15,8 +16,38 @@ class DashboardPasien extends StatefulWidget {
   _DashboardPasien createState() => _DashboardPasien();
 }
 
-class _DashboardPasien extends State<DashboardPasien> {
+class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserver{
   final ControllerPasien controllerPasien = Get.find<ControllerPasien>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    setStatus("Online");
+    super.initState();
+  }
+
+  void setStatus(String status)async{
+    print("setStatus no ktp dokter : " + controllerPasien.pasien.value.noKtp);
+    var data = await _firestore.collection("users").doc(controllerPasien.pasien.value.noKtp).update({
+      "status" : status
+    });
+
+    print("data : " + await _firestore.collection("users").doc(controllerPasien.pasien.value.noKtp).get().toString());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.resumed){
+      setStatus("Online");
+      print("online");
+    }else{
+      setStatus("Offline");
+      print("offline");
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,6 +4,7 @@ import 'package:aplikasi_rs/config/theme.dart';
 import 'package:aplikasi_rs/controllers/controller_chat.dart';
 import 'package:aplikasi_rs/controllers/controller_chat_room.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,9 @@ class _KonsultasiChatState extends State<KonsultasiChat> {
   ControllerChat controllerChat = Get.find<ControllerChat>();
   ControllerChatRoom controllerChatRoom = Get.find<ControllerChatRoom>();
   final String chatId = (Get.arguments as Map<String, dynamic>)["chat_id"];
+  final String friednNik = (Get.arguments as Map<String, dynamic>)["friendNik"];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -98,13 +102,13 @@ class _KonsultasiChatState extends State<KonsultasiChat> {
                       color: Colors.white,
                     ),
                   ),
-                  // Text(
-                  //   dataFriend["status"],
-                  //   style: TextStyle(
-                  //     fontSize: 14,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
+                  Text(
+                    dataFriend["status"],
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               );
             }

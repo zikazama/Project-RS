@@ -63,7 +63,8 @@ class _LoginDokterState extends State<LoginDokter> {
             "uid": controllerChat.user.value.uid,
             "name": controllerChat.user.value.name,
             "nik": controllerChat.user.value.nik,
-            "creationTime": "0000-00-00 00:00:00"
+            "creationTime": "0000-00-00 00:00:00",
+            "status": "Offline"
           });
         }
         offLoading();

@@ -77,7 +77,8 @@ class _LoginPasienState extends State<LoginPasien> {
               "uid": controllerChat.user.value.uid,
               "name": controllerChat.user.value.name,
               "nik": controllerChat.user.value.nik,
-              "creationTime": controllerChat.user.value.creationTime
+              "creationTime": controllerChat.user.value.creationTime,
+              "status": "Offline"
             });
           }
           offLoading();

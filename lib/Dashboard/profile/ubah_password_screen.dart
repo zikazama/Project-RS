@@ -1,6 +1,8 @@
 import 'package:aplikasi_rs/config/theme.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
 import 'package:aplikasi_rs/services/pasien_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -16,6 +18,10 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
   TextEditingController lamaController = TextEditingController();
   TextEditingController baruController = TextEditingController();
   TextEditingController konfirmasiController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
   bool loading = false;
   bool isHiddenNewPassword = true;
   bool isHiddenOldPassword = true;
@@ -40,30 +46,39 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
             idPasien: controllerPasien.pasien.value.idPasien,
             oldPass: lamaController.text,
             newPass: konfirmasiController.text)
-        .then((value) {
-      offLoading();
+        .then((value) async {
       print("value ui " + value.toString());
       if (value == null) {
+        offLoading();
         Get.snackbar("error", "Failed", backgroundColor: Colors.red);
       } else {
         if (value['status'] == true) {
-          Get.defaultDialog(
-              barrierDismissible: false,
-              title: '',
-              backgroundColor: AppColor.primaryColor,
-              content: Column(
-                children: [
-                  SvgPicture.asset(
-                      "assets/icons/akar-icons_circle-check-fill.svg"),
-                  Text(value['message'].toString(),
-                      textAlign: TextAlign.center),
-                ],
-              ));
-          Future.delayed(Duration(seconds: 2), () {
-            Get.back();
-            Get.back();
+          await _auth.currentUser.updatePassword(konfirmasiController.text).then((hsl) {
+            print("berhasil");
+            offLoading();
+            Get.defaultDialog(
+                barrierDismissible: false,
+                title: '',
+                backgroundColor: AppColor.primaryColor,
+                content: Column(
+                  children: [
+                    SvgPicture.asset(
+                        "assets/icons/akar-icons_circle-check-fill.svg"),
+                    Text(value['message'].toString(),
+                        textAlign: TextAlign.center),
+                  ],
+                ));
+            Future.delayed(Duration(seconds: 2), () {
+              Get.back();
+              Get.back();
+            });
+          }).catchError((e){
+            offLoading();
+            Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
           });
+
         } else {
+          offLoading();
           Get.defaultDialog(
               radius: 3,
               title: '',
@@ -84,6 +99,7 @@ class _UbahPasswordScreenState extends State<UbahPasswordScreen> {
               ));
         }
       }
+      offLoading();
     }).catchError((e) {
       offLoading();
       Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
