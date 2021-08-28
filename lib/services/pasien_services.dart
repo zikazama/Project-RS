@@ -116,6 +116,7 @@ class PasienServices {
   Future<dynamic> sendHomeCare(
       {@required idPasien,
       @required String namaPasien,
+      @required String tanggal_pelayanan,
       @required String noHp,
       @required String latitude,
       @required String longitude,
@@ -136,6 +137,7 @@ class PasienServices {
           body: {
             "pasien_id": idPasien,
             "nama_pasien": namaPasien,
+            "tanggal_pelayanan": tanggal_pelayanan,
             "no_hp": noHp,
             "longitude": longitude,
             "latitude": latitude,
