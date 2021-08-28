@@ -1,4 +1,4 @@
-//import 'dart:io';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:aplikasi_rs/Dashboard/dashboard_pasien.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
@@ -28,21 +28,61 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
   bool visible = false;
   List<dynamic> _dataDokter = [];
   final picker = ImagePicker();
-  // File _image;
+  File _image;
 
-  // Future _getImage() async {
-  //   //final image = await picker.getImage(source: ImageSource.camera);
-  //   var image = await picker.getImage(source: ImageSource.camera);
+  Future _getImagecamera() async {
+    final image = await picker.getImage(source: ImageSource.camera);
 
-  //   setState(() {
-  //     // _image = File(image.path);
-  //     // if (image != null) {
-  //     //   _image = File(image.path);
-  //     // } else {
-  //     //   print('No image selected.');
-  //     // }
-  //   });
-  // }
+    setState(() {
+      _image = File(image.path);
+      if (image != null) {
+        _image = File(image.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future _getImagegallery() async {
+    var image = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(image.path);
+      if (image != null) {
+        _image = File(image.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  void dialogOptionImage(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+              child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("Galeri"),
+                onTap: () {
+                  _getImagegallery();
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text("Kamera"),
+                onTap: () {
+                  _getImagecamera();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ));
+        });
+  }
 
   _onLoading() => setState(() => loading = true);
   _offLoading() => setState(() => loading = false);
@@ -200,7 +240,9 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
                             },
                             controller: foto_bpjs,
                             readOnly: true,
-                            // onTap: this._getImage,
+                            onTap: () {
+                              dialogOptionImage(context);
+                            },
                             decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.camera_alt),
                                 hintText: "Upload Foto BPJS"),
