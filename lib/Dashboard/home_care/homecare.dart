@@ -210,6 +210,9 @@ class _HomeCareState extends State<HomeCare> {
                                                 .pasien.value.idPasien,
                                             namaPasien: namapasien.text,
                                             noHp: nohp.text,
+                                            tanggal_pelayanan: DateTime.now()
+                                                .toString()
+                                                .split(' ')[0],
                                             latitude: latitudeMap1.toString(),
                                             longitude: longitudeMap1.toString(),
                                             keluhan: keluhan.text,
