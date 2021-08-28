@@ -53,7 +53,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _onLoading();
     String updateAt = DateFormat("yyyy-MM-dd H:m:s").format(DateTime.now());
 
-    print("update : " +updateAt);
+    print("update : " + updateAt);
     await PasienServices()
         .editProfile(
             idPasien: controllerPasien.pasien.value.idPasien,
@@ -182,12 +182,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: 19,
                     ),
-                    TextField(
-                      controller: jenisKelaminController,
-                      decoration: InputDecoration(
-                          hintText: "Jenis Kelamin",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20)),
+                    new DropdownButtonFormField<String>(
+                      value: jenisKelaminController.text,
+                      hint: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text('Jenis Kelamin'),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text('Laki-Laki'),
+                          ),
+                          value: 'l',
+                        ),
+                        DropdownMenuItem(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text('Perempuan'),
+                          ),
+                          value: 'p',
+                        )
+                      ],
+                      onChanged: (val) {
+                        setState(() {
+                          jenisKelaminController.text = val;
+                        });
+
+                        print("jenis kelamin : " + jenisKelaminController.text);
+                      },
                     ),
+                    // TextField(
+                    //   controller: jenisKelaminController,
+                    //   decoration: InputDecoration(
+                    //       hintText: "Jenis Kelamin",
+                    //       contentPadding: EdgeInsets.symmetric(horizontal: 20)),
+                    // ),
                     SizedBox(
                       height: 19,
                     ),

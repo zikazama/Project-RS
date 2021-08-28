@@ -42,10 +42,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               _offLoading();
               Get.to(() => ResetPassword(email: emailC.text));
             });
+      }).catchError((e) {
+        _offLoading();
+        print("error : " + e.runtimeType.toString());
+        print("error : " + e.code.toString());
+        Get.snackbar("error", e.code, backgroundColor: Colors.red);
       });
     } catch (e) {
       print("gagal");
-      Get.snackbar("error", "Gagal Mengirim reset password");
+      _offLoading();
+
+      Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
     }
   }
 

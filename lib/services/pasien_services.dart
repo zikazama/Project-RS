@@ -83,6 +83,38 @@ class PasienServices {
     }
   }
 
+  Future<dynamic> resetPassword({
+    @required String email,
+    @required String newPass,
+  }) async {
+    String usernameAuth = "admin";
+    String passwordAuth = "1234";
+    String basicAuth =
+        'Basic ' + base64Encode(utf8.encode('$usernameAuth:$passwordAuth'));
+    print(basicAuth);
+
+    Map<String, dynamic> data = {
+      "email": email,
+      "new_password": newPass,
+    };
+
+    print("cetak data : " + data.toString());
+    try {
+      final response = await http.put(
+          Uri.parse("https://api.rsbmgeriatri.com/api/Pasien/forgotPassword"),
+          headers: <String, String>{'authorization': basicAuth},
+          body: data);
+
+      print("status : " + response.statusCode.toString());
+      //print("response body type : " + response.body.runtimeType.toString());
+
+      print("hasil auth : " + response.body.toString());
+      return jsonDecode(response.body);
+    } catch (e) {
+      print("error ubahPassword Services : " + e.toString());
+    }
+  }
+
   Future<dynamic> sendEmergency(
       {@required idPasien,
       @required String latitude,

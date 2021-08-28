@@ -1,5 +1,7 @@
+import 'package:aplikasi_rs/mainscreen.dart';
 import 'package:aplikasi_rs/registrasi_pasien.dart';
 import 'package:aplikasi_rs/services/auth_services.dart';
+import 'package:aplikasi_rs/services/pasien_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class ResetPassword extends StatefulWidget {
 class _ResetPasswordState extends State<ResetPassword> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
+  bool hidePass = true;
   TextEditingController passC = TextEditingController();
 
   _onLoading() {
@@ -62,29 +65,33 @@ class _ResetPasswordState extends State<ResetPassword> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: widget.email, password: passC.text);
-
       print(userCredential.user);
       if (userCredential.user != null) {
-        _offLoading();
         print("lanjut ubah pass db");
-        AuthServices().getPasien().then((value) {
-          print("cetak semua pasien" + value.toString());
-          List data = value;
-          String nik = "";
-          data.forEach((element) {
-            print("emailnya : " +
-                widget.email +
-                " email db : ${element['email']}");
-            if (element['email'].toLowerCase() == widget.email.toLowerCase()) {
-              print("nik nya ada: " + element['no_ktp']);
-            } else {
-              print("ga ada");
-            }
-          });
-
-          if (nik != "") {}
+        await PasienServices()
+            .resetPassword(email: widget.email, newPass: passC.text)
+            .then((value) async {
+          print("value ui reset pass db : " + value.toString());
+          if (value['status'] == true) {
+            print("berhasil ubah password db");
+            _offLoading();
+            Get.defaultDialog(
+                barrierDismissible: false,
+                title: 'Berhasil',
+                middleText: 'Ingat baik baik password anda',
+                onConfirm: () {
+                  Get.offAll(() => MainScreen());
+                });
+          } else {
+            _offLoading();
+            Get.defaultDialog(title: "Error", middleText: value['message']);
+          }
+        }).catchError((e) {
+          _offLoading();
+          Get.snackbar("error", e.toString(), backgroundColor: Colors.red);
         });
       } else {
+        _offLoading();
         print("gagal login karena user " + userCredential.toString());
       }
       _offLoading();
@@ -148,9 +155,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                             Container(
                               width: 300.0,
                               child: TextField(
+                                obscureText: hidePass,
                                 controller: passC,
                                 decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.vpn_key),
+                                    suffixIcon: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            hidePass = !hidePass;
+                                          });
+                                        },
+                                        child: hidePass
+                                            ? Icon(Icons.visibility)
+                                            : Icon(Icons.visibility_off)),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
