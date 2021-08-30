@@ -263,12 +263,21 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
                               idpasien.text =
                                   controllerPasien.pasien.value.idPasien;
                               if (formKey.currentState.validate()) {
-                                PendaftaranOnlinePasienServices.connectToAPI(
-                                    idpasien.text,
-                                    tanggalPeriksa.text,
-                                    dokterID.text,
-                                    jenis_bayar.text,
-                                    _image);
+                                if (jenis_bayar.text == 'BPJS') {
+                                  PendaftaranOnlinePasienServices.connectToAPI(
+                                      idpasien.text,
+                                      tanggalPeriksa.text,
+                                      dokterID.text,
+                                      jenis_bayar.text,
+                                      _image);
+                                } else {
+                                  PendaftaranOnlinePasienServices.connectToAPI(
+                                      idpasien.text,
+                                      tanggalPeriksa.text,
+                                      dokterID.text,
+                                      jenis_bayar.text,
+                                      null);
+                                }
 
                                 showDialog(
                                     context: context,

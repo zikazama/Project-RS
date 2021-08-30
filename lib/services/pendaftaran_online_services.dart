@@ -27,8 +27,10 @@ class PendaftaranOnlinePasienServices {
       request.fields['dokter_id'] = idDokter;
       request.fields['jenis_bayar'] = jenis_bayar;
 
-      request.files
-          .add(await http.MultipartFile.fromPath('file', foto_bpjs.path));
+      if (jenis_bayar == 'BPJS') {
+        request.files
+            .add(await http.MultipartFile.fromPath('file', foto_bpjs.path));
+      }
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       // final response = await http.post(Uri.parse(apiURL),

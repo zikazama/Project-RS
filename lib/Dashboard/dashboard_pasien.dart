@@ -1,5 +1,6 @@
 import 'package:aplikasi_rs/Dashboard/daftar_online.dart';
 import 'package:aplikasi_rs/Dashboard/detail_informasi.dart';
+import 'package:aplikasi_rs/login_pasien.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:aplikasi_rs/helpers/shared_preferences.dart';
 import 'package:aplikasi_rs/Dashboard/konsultasi_online/konsultasi_online.dart';
@@ -176,7 +177,7 @@ class _DashboardPasien extends State<DashboardPasien>
                                 SharedPreferencesHelper.removeValues('noKtp');
                                 SharedPreferencesHelper.removeValues('pass');
                                 SharedPreferencesHelper.removeValues('role');
-                                Get.to(() => DashboardPasien());
+                                Get.to(() => LoginPasien());
                               }),
                         ],
                       ),
