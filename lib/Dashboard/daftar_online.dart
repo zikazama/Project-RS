@@ -37,6 +37,7 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
       _image = File(image.path);
       if (image != null) {
         _image = File(image.path);
+        print(_image);
       } else {
         print('No image selected.');
       }
@@ -50,6 +51,7 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
       _image = File(image.path);
       if (image != null) {
         _image = File(image.path);
+        print(_image);
       } else {
         print('No image selected.');
       }
@@ -266,7 +268,7 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
                                     tanggalPeriksa.text,
                                     dokterID.text,
                                     jenis_bayar.text,
-                                    foto_bpjs.text);
+                                    _image);
 
                                 showDialog(
                                     context: context,

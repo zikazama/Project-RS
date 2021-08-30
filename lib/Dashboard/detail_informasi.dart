@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class DetailInformasi extends StatelessWidget {
-  final Map<String, dynamic> informasi;
+  final dynamic informasi;
 
   DetailInformasi({@required this.informasi});
   @override
@@ -23,8 +24,8 @@ class DetailInformasi extends StatelessWidget {
             ]),
             child: Column(
               children: [
-                Image.asset(
-                  informasi['imageUrl'],
+                Image.network(
+                  'https://cdn0-production-images-kly.akamaized.net/5EKWfqGHzQUmkLpqgaAMUDZ6ayo=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3287731/original/003422800_1604554853-Banner_tips_jaga_kesehatan_mental_saat_covid-19.jpg',
                   fit: BoxFit.cover,
                   height: 166,
                   width: double.infinity,
@@ -37,7 +38,7 @@ class DetailInformasi extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Text(
-                      informasi['title'],
+                      informasi.judul,
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
@@ -49,10 +50,7 @@ class DetailInformasi extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    informasi['body'],
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                  ),
+                  child: Html(data: informasi.konten),
                 ),
                 SizedBox(
                   height: 25,

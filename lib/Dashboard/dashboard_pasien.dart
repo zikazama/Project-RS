@@ -4,22 +4,27 @@ import 'package:aplikasi_rs/Dashboard/emergency.dart';
 import 'package:aplikasi_rs/Dashboard/konsultasi_online/konsultasi_online.dart';
 import 'package:aplikasi_rs/Dashboard/profile/profile_screen.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
+import 'package:aplikasi_rs/services/postingan_service.dart';
+import 'package:aplikasi_rs/models/model_postingan.dart';
 import 'package:aplikasi_rs/data/data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:aplikasi_rs/Dashboard/home_care/homecare.dart';
+import 'package:html/parser.dart';
+import 'dart:developer' as developer;
 
 class DashboardPasien extends StatefulWidget {
   @override
   _DashboardPasien createState() => _DashboardPasien();
 }
 
-class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserver{
+class _DashboardPasien extends State<DashboardPasien>
+    with WidgetsBindingObserver {
   final ControllerPasien controllerPasien = Get.find<ControllerPasien>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
 
   @override
   void initState() {
@@ -28,22 +33,28 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
     super.initState();
   }
 
-  void setStatus(String status)async{
+  void setStatus(String status) async {
     print("setStatus no ktp dokter : " + controllerPasien.pasien.value.noKtp);
-    var data = await _firestore.collection("users").doc(controllerPasien.pasien.value.noKtp).update({
-      "status" : status
-    });
+    var data = await _firestore
+        .collection("users")
+        .doc(controllerPasien.pasien.value.noKtp)
+        .update({"status": status});
 
-    print("data : " + await _firestore.collection("users").doc(controllerPasien.pasien.value.noKtp).get().toString());
+    print("data : " +
+        await _firestore
+            .collection("users")
+            .doc(controllerPasien.pasien.value.noKtp)
+            .get()
+            .toString());
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if(state == AppLifecycleState.resumed){
+    if (state == AppLifecycleState.resumed) {
       setStatus("Online");
       print("online");
-    }else{
+    } else {
       setStatus("Offline");
       print("offline");
     }
@@ -68,7 +79,7 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                         child: Container(
                             margin: EdgeInsets.only(
                                 bottom:
-                                    MediaQuery.of(context).size.height * 0.120),
+                                    MediaQuery.of(context).size.height * 0.180),
                             child: Center(
                                 child: Text(
                               "Dashboard",
@@ -176,37 +187,50 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
                     //INFORMASI GERIATRI
                     Expanded(
                         child: Container(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InformasiCard(
-                                modelInformasi: dummyContent[0],
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailInformasi(
-                                              informasi: dummyContent[0])));
-                                },
-                              ),
-                              InformasiCard(
-                                modelInformasi: dummyContent[1],
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailInformasi(
-                                              informasi: dummyContent[1])));
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ))
+                            child: FutureBuilder<List<Postingan>>(
+                      future: PostinganService.fetchPostingan(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<Postingan> data = snapshot.data;
+                          return _postingListView(data);
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    )
+                            // ListView(
+                            //   shrinkWrap: true,
+                            //   children: [
+                            //     Column(
+                            //       mainAxisSize: MainAxisSize.min,
+                            //       children: [
+
+                            //         // InformasiCard(
+                            //         //   modelInformasi: dummyContent[0],
+                            //         //   onTap: () {
+                            //         //     Navigator.push(
+                            //         //         context,
+                            //         //         MaterialPageRoute(
+                            //         //             builder: (context) => DetailInformasi(
+                            //         //                 informasi: dummyContent[0])));
+                            //         //   },
+                            //         // ),
+                            //         // InformasiCard(
+                            //         //   modelInformasi: dummyContent[1],
+                            //         //   onTap: () {
+                            //         //     Navigator.push(
+                            //         //         context,
+                            //         //         MaterialPageRoute(
+                            //         //             builder: (context) => DetailInformasi(
+                            //         //                 informasi: dummyContent[1])));
+                            //         //   },
+                            //         // ),
+                            //       ],
+                            //     ),
+                            //   ],
+                            // ),
+                            ))
                   ],
                 ),
               ),
@@ -214,6 +238,24 @@ class _DashboardPasien extends State<DashboardPasien> with WidgetsBindingObserve
           ]),
         ]));
   }
+}
+
+ListView _postingListView(data) {
+  return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        print(data[index]);
+        return InformasiCard(
+          modelInformasi: data[index],
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailInformasi(informasi: data[index])));
+          },
+        );
+      });
 }
 
 class CategoryCard extends StatelessWidget {
@@ -266,8 +308,14 @@ class CategoryCard extends StatelessWidget {
 }
 
 class InformasiCard extends StatelessWidget {
-  final Map<String, dynamic> modelInformasi;
+  final dynamic modelInformasi;
   final Function onTap;
+
+  String parseHtmlString(String htmlString) {
+    final document = parse(htmlString);
+    final String parsedString = parse(document.body.text).documentElement.text;
+    return parsedString;
+  }
 
   InformasiCard({@required this.modelInformasi, this.onTap});
   @override
@@ -278,55 +326,52 @@ class InformasiCard extends StatelessWidget {
           onTap();
         }
       },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        height: 120,
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 7,
-              offset: Offset(0, 3))
-        ]),
-        child: Row(
-          children: [
-            Image.asset(
-              modelInformasi['imageUrl'],
-              height: 120,
-              width: 130,
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        modelInformasi['title'],
-                        maxLines: 3,
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w500),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
-                      modelInformasi['subTitle'],
-                      maxLines: 4,
-                      style:
-                          TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
-                      overflow: TextOverflow.ellipsis,
-                    ))
-              ],
-            ))
-          ],
+      child: ClipRRect(
+        child: Container(
+          margin: EdgeInsets.only(bottom: 10),
+          height: 120,
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 7,
+                offset: Offset(0, 3))
+          ]),
+          child: Row(
+            children: [
+              Image.network(
+                'https://cdn0-production-images-kly.akamaized.net/5EKWfqGHzQUmkLpqgaAMUDZ6ayo=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3287731/original/003422800_1604554853-Banner_tips_jaga_kesehatan_mental_saat_covid-19.jpg',
+                height: 120,
+                width: 130,
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          modelInformasi.judul,
+                          maxLines: 3,
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )),
+                  Expanded(
+                      flex: 1,
+                      child: Text(modelInformasi.plainKonten,
+                          overflow: TextOverflow.ellipsis))
+                ],
+              ))
+            ],
+          ),
         ),
       ),
     );

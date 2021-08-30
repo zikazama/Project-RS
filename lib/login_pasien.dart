@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aplikasi_rs/controllers/controllers.dart';
+import 'package:aplikasi_rs/helpers/shared_preferences.dart';
 import 'package:aplikasi_rs/lupa_password.dart';
 import 'package:aplikasi_rs/models/model_pasien.dart';
 import 'package:aplikasi_rs/registrasi_pasien.dart';
@@ -28,6 +29,31 @@ class _LoginPasienState extends State<LoginPasien> {
   TextEditingController pass = new TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool loading = false;
+  bool logged = false;
+
+  _getPrefs() async {
+    final check = await SharedPreferencesHelper.getStringValuesSF('noKtp');
+    if (check != '') {
+      noKtp.text = await SharedPreferencesHelper.getStringValuesSF('noKtp');
+      pass.text = await SharedPreferencesHelper.getStringValuesSF('pass');
+      setState(() {
+        logged = true;
+      });
+    }
+  }
+
+  _autoLogin() async {
+    await _getPrefs();
+    if (logged) {
+      _login();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _autoLogin();
+  }
 
   onLoading() {
     setState(() {
@@ -81,6 +107,9 @@ class _LoginPasienState extends State<LoginPasien> {
               "status": "Offline"
             });
           }
+          SharedPreferencesHelper.addStringToSF('noKtp', noKtp.text);
+          SharedPreferencesHelper.addStringToSF('pass', pass.text);
+          SharedPreferencesHelper.addStringToSF('role', 'pasien');
           offLoading();
 
           Get.to(() => DashboardPasien());

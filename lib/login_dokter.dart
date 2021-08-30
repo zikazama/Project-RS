@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:aplikasi_rs/Dashboard/dashboard_dokter.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
+import 'package:aplikasi_rs/helpers/shared_preferences.dart';
 import 'package:aplikasi_rs/models/model_dokter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,9 @@ class _LoginDokterState extends State<LoginDokter> {
             "status": "Offline"
           });
         }
+        SharedPreferencesHelper.addStringToSF('noKtp', ktp.text);
+        SharedPreferencesHelper.addStringToSF('pass', pass.text);
+        SharedPreferencesHelper.addStringToSF('role', 'dokter');
         offLoading();
         Get.to(() => DashboardDokter());
       } else {
