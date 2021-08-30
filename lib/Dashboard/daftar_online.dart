@@ -37,6 +37,7 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
       _image = File(image.path);
       if (image != null) {
         _image = File(image.path);
+        foto_bpjs.text = image.path;
         print(_image);
       } else {
         print('No image selected.');
@@ -51,6 +52,7 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
       _image = File(image.path);
       if (image != null) {
         _image = File(image.path);
+        foto_bpjs.text = image.path;
         print(_image);
       } else {
         print('No image selected.');
@@ -238,7 +240,10 @@ class PendaftaranOnlineState extends State<PendaftaranOnline> {
                           visible: visible,
                           child: TextFormField(
                             validator: (val) {
-                              return (val == null) ? 'Foto BPJS' : null;
+                              if (val == null || val.isEmpty) {
+                                return 'Foto tidak boleh kosong';
+                              }
+                              return null;
                             },
                             controller: foto_bpjs,
                             readOnly: true,

@@ -351,7 +351,7 @@ class InformasiCard extends StatelessWidget {
           child: Row(
             children: [
               Image.network(
-                'https://cdn0-production-images-kly.akamaized.net/5EKWfqGHzQUmkLpqgaAMUDZ6ayo=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/3287731/original/003422800_1604554853-Banner_tips_jaga_kesehatan_mental_saat_covid-19.jpg',
+                'http://admin.rsbmgeriatri.com/asset/' + modelInformasi.gambar,
                 height: 120,
                 width: 130,
               ),
