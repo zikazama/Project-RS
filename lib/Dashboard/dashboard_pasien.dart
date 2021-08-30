@@ -1,6 +1,7 @@
 import 'package:aplikasi_rs/Dashboard/daftar_online.dart';
 import 'package:aplikasi_rs/Dashboard/detail_informasi.dart';
 import 'package:aplikasi_rs/Dashboard/emergency.dart';
+import 'package:aplikasi_rs/helpers/shared_preferences.dart';
 import 'package:aplikasi_rs/Dashboard/konsultasi_online/konsultasi_online.dart';
 import 'package:aplikasi_rs/Dashboard/profile/profile_screen.dart';
 import 'package:aplikasi_rs/controllers/controllers.dart';
@@ -167,6 +168,15 @@ class _DashboardPasien extends State<DashboardPasien>
                               title: "Profile Anda",
                               press: () {
                                 Get.to(() => ProfileScreen());
+                              }),
+                          CategoryCard(
+                              srcSvg: "assets/icons/logout.svg",
+                              title: "Keluar",
+                              press: () {
+                                SharedPreferencesHelper.removeValues('noKtp');
+                                SharedPreferencesHelper.removeValues('pass');
+                                SharedPreferencesHelper.removeValues('role');
+                                Get.to(() => DashboardPasien());
                               }),
                         ],
                       ),
