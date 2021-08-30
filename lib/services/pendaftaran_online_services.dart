@@ -4,8 +4,8 @@ import 'dart:io';
 import 'dart:developer' as developer;
 
 class PendaftaranOnlinePasienServices {
-  static Future<void> connectToAPI(String idPasien, tgl_periksa, idDokter,
-      jenis_bayar, File foto_bpjs) async {
+  static Future<Map<String, dynamic>> connectToAPI(String idPasien, tgl_periksa,
+      idDokter, jenis_bayar, File foto_bpjs) async {
     String usernameAuth = "admin";
     String passwordAuth = "1234";
     String basicAuth =
@@ -35,15 +35,13 @@ class PendaftaranOnlinePasienServices {
       final response = await http.Response.fromStream(streamedResponse);
       // final response = await http.post(Uri.parse(apiURL),
       //     headers: <String, String>{'authorization': basicAuth}, body: data);
-
       print('Status code: ${response.statusCode}');
       print('Body: ${response.body}');
       // developer.log(response.body);
-      if (response.statusCode == 201) {
-        return jsonDecode(response.body).toString();
-      }
+      return jsonDecode(response.body);
     } catch (e) {
       print("error editProfile Services" + e.toString());
+      return jsonDecode(e.toString());
     }
   }
 }
